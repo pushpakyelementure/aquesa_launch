@@ -1,0 +1,4 @@
+.envrc
+.vscode
+firebase_service_account.json
+.venv
