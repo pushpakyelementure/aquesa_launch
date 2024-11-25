@@ -6,6 +6,7 @@ from pydantic import UUID4
 
 from app.auth import manage, verify
 from app.auth.permissions import authorize
+
 from app.db.models.community import community_model
 from app.routers.app_users import app_crud, app_req_schema, app_res_schema
 from app.routers.app_users.app_users_res_doc import (  # Noqa
@@ -150,7 +151,9 @@ async def put_app_user(
         "birth_date": req.birth_date,
     }
     try:
-        await app_crud.update_app_user_info(community_id, user_id, user_token, **data) # noqa
+        await app_crud.update_app_user_info(
+            community_id, user_id, user_token, **data
+        )  # noqa
         await manage.change_mobile_number(user_id, req.mobile)
         return {
             "user_id": user_id,
