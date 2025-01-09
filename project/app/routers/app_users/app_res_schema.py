@@ -63,3 +63,4 @@ class user_update_resp_model(BaseModel):
 class user_patch_resp_model(BaseModel):
     user_id: Optional[str] = None
     detail: Optional[str] = None
+    # meta: Optional[update_meta_info] = None
