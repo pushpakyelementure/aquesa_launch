@@ -6,6 +6,7 @@ from pydantic import UUID4
 
 from app.auth import manage, verify
 from app.auth.permissions import authorize
+
 from app.db.models.community import community_model
 from app.routers.app_users import app_crud, app_req_schema, app_res_schema
 from app.routers.app_users.app_users_res_doc import (  # Noqa
@@ -150,12 +151,57 @@ async def put_app_user(
         "birth_date": req.birth_date,
     }
     try:
-        await app_crud.update_app_user_info(community_id, user_id, user_token, **data) # noqa
+        await app_crud.update_app_user_info(
+            community_id, user_id, user_token, **data
+        )  # noqa
         await manage.change_mobile_number(user_id, req.mobile)
         return {
             "user_id": user_id,
             "detail": "app user info updated successfully",
             "updated_info": data,
+            "meta": {
+                "ver": 1.0,
+                "activity": {
+                    "updated_by": user_token["uid"],
+                    "updated_at": datetime.utcnow(),
+                },
+            },
+        }
+    except Exception as http_ex:
+        raise http_ex
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+
+
+@router.patch(
+    "/{dwelling_id}/{user_id}",
+    status_code=status.HTTP_200_OK,
+    response_model=app_res_schema.user_patch_resp_model,
+    responses=update_app.responses,
+)
+async def update_dwell_info(
+    dwelling_id: UUID4,
+    user_id: str,
+    req: app_req_schema.update_user_status,
+    user_token=Depends(verify.get_user_token),
+):
+    await authorize.user_is_superuser_or_admin(
+        user_token,
+    )
+    data = {
+        "user_status": req.user_status,
+        "role": req.role
+    }
+    try:
+        await app_crud.update_app_user_status(
+            dwelling_id, user_id, **data
+        )  # noqa 
+        return {
+            "user_id": user_id,
+            "detail": "app user info updated successfully",
             "meta": {
                 "ver": 1.0,
                 "activity": {

@@ -183,6 +183,66 @@ async def test_update_invalid_app_user_422(test_app_with_db):
     ), f"Unexpected response: {response.json()}"  # Noqa
 
 
+# Update dwelling to app user the valid app_user 200_OK
+@pytest.mark.asyncio
+async def test_patch_valid_app_user_200(test_app_with_db):
+    request_body = {
+        "role": "family",
+        "user_status": "active"
+    }
+    dwelling_id = "7c1f5da0-bbbe-4625-983d-a08176a09993"
+    response = await test_app_with_db.patch(
+        f"/api/app_users/{dwelling_id}/{user_id}",
+        json=request_body,
+        headers={"Authorization": f"Bearer {id_token}"},
+    )
+
+    # Assertions
+    assert (
+        response.status_code == status.HTTP_200_OK
+    ), f"Unexpected response: {response.json()}"  # Noqa
+
+
+# Update dwelling to app user the invalid app_user 404 not
+@pytest.mark.asyncio
+async def test_patch_invalid_app_user_404(test_app_with_db):
+    request_body = {
+        "role": "family",
+        "user_status": "active"
+    }
+    dwelling_id = "0d97cdb7-8d1c-42c7-bb43-3b24ba53c176"
+    response = await test_app_with_db.patch(
+        f"/api/app_users/{dwelling_id}/{user_id}",
+        json=request_body,
+        headers={"Authorization": f"Bearer {id_token}"},
+    )
+
+    # Assertions
+    assert (
+        response.status_code == status.HTTP_404_NOT_FOUND
+    ), f"Unexpected response: {response.json()}"  # Noqa
+
+
+# Update dwelling to app user the invalid app_user 422 unprocessable entity
+@pytest.mark.asyncio
+async def test_patch_valid_app_user_422(test_app_with_db):
+    request_body = {
+        "role": "123456",
+        "user_status": "active"
+    }
+    dwelling_id = "0d97cdb7-8d1c-42c7-bb43-3b24ba53c175"
+    response = await test_app_with_db.patch(
+        f"/api/app_users/{dwelling_id}/{user_id}",
+        json=request_body,
+        headers={"Authorization": f"Bearer {id_token}"},
+    )
+
+    # Assertions
+    assert (
+        response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+    ), f"Unexpected response: {response.json()}"  # Noqa
+
+
 # Delete the valid App_user 204
 @pytest.mark.asyncio
 async def test_delete_valid_app_user_204(test_app_with_db):

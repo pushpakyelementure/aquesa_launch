@@ -4,6 +4,7 @@ from fastapi import HTTPException, status
 
 from app.db.models.app_user import app_users_model
 from app.db.models.community import community_model
+from app.db.models.dwelling import dwelling_model
 
 
 async def create_app_user(**data):
@@ -68,6 +69,42 @@ async def update_app_user_info(community_id, user_id, user_token, **data):
          "updated_by": user_token["uid"],
          "updated_at": datetime.utcnow(),
             }
+    await user.save()
+    return user
+
+
+async def update_app_user_status(dwelling_id, user_id, **data):
+    dwell = await dwelling_model.find_one(
+        dwelling_model.dwelling_id == dwelling_id
+    )
+    if dwell is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Dwelling Not found",
+        )
+    user = await app_users_model.find_one(app_users_model.user_id == user_id)
+    if user is None:
+        raise HTTPException(
+               status_code=status.HTTP_404_NOT_FOUND,
+               detail="User not found",
+           )
+
+    # Add dwelling data to the user
+    dwelling_data = {
+        "community_id": dwell.community_id,
+        "dwelling_id": dwell.dwelling_id,
+        "community_name": dwell.community_name,
+        "block": dwell.block,
+        "floor_no": dwell.floor_no,
+        "flat_no": dwell.flat_no,
+        "role": data["role"],
+        "user_status": data["user_status"],
+
+    }
+    if not hasattr(user, "dwelling") or user.dwelling is None:
+        user.dwelling_info = []
+
+    user.dwelling.append(dwelling_data)
     await user.save()
     return user
 
