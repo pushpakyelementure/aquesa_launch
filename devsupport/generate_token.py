@@ -22,6 +22,11 @@ parser.add_argument(
     help="Generates Super User Token",
 )
 
+parser.add_argument(
+    "-cu",
+    "--community_user",
+    help="Generates Community User Token",
+)
 
 config = {
     "apiKey": os.getenv("FB_CLIENT_API_KEY"),
@@ -78,4 +83,11 @@ if args.superuser_admin:
     login_and_get_id_token(
         os.getenv("FIREBASE_SUPERUSER_ADMIN_EMAIL"),
         os.getenv("FIREBASE_SUPERUSER_ADMIN_PASSWORD"),
+    )
+
+if args.community_user:
+    print("community_user")
+    login_and_get_id_token(
+        os.getenv("FIREBASE_COMMUNITY_USER_EMAIL"),
+        os.getenv("FIREBASE_COMMUNITY_USER_PASSWORD"),
     )
