@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/consumption",
+    "/consumption/{community_id}",
     status_code=status.HTTP_200_OK,
     response_model=consumption_res_schema.consumption_by_community,
     responses=total_csm.responses,
@@ -57,7 +57,7 @@ async def total_consumption(
 
 
 @router.get(
-    "/top-dwellings/",
+    "/top-dwellings/{community_id}",
     status_code=status.HTTP_200_OK,
     response_model=consumption_res_schema.TopDwellingsConsumption,
     responses=top_dwell.responses,
@@ -102,52 +102,3 @@ async def top_dwellings(
 
         )
     return response
-
-
-# @router.get(
-#     "/dwellingconsumption/",
-#     status_code=status.HTTP_200_OK,
-#     response_model=consumption_res_schema.DwellingsConsumption,
-
-# )
-# async def dwellings_consumption(
-#     community_id: UUID4,
-#     dwelling_id: UUID4,
-#     start_date: datetime = Query(..., description="Start date in ISO format"),
-#     end_date: datetime = Query(..., description="End date in ISO format"),
-#     aggregation: aggregation_enum = Query(..., description="Aggregation type: month, week, or day"), # noqa
-#     user_token=Depends(verify.get_user_token),
-# ):
-#     await authorize.user_is_superuser_or_admin(
-#         user_token
-#     )
-#     if aggregation == aggregation_enum.month:
-#         response = await consumption_crud.dwelling_monthly_consumption(
-#             user_token=user_token,
-#             communityid=community_id,
-#             dwellingid=dwelling_id,
-#             start_ist=start_date,
-#             end_ist=end_date,
-#             aggregation=aggregation,
-
-#         )
-#     if aggregation == aggregation_enum.week:
-#         response = await consumption_crud.week_top_dwellings_consumption(
-#             user_token=user_token,
-#             communityid=community_id,
-#             start_ist=start_date,
-#             end_ist=end_date,
-#             aggregation=aggregation,
-
-#         )
-#     if aggregation == aggregation_enum.day:
-#         response = await consumption_crud.dwelling_day_consumption(
-#             user_token=user_token,
-#             communityid=community_id,
-#             dwellingid=dwelling_id,
-#             start_ist=start_date,
-#             end_ist=end_date,
-#             aggregation=aggregation,
-
-#         )
-#     return response
