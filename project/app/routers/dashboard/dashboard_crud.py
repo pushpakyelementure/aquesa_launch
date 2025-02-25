@@ -50,6 +50,15 @@ async def block_data(
         59,
         59,
     )
+
+    # Ensure the community exists in rawdata collection
+    community = await rawdata.find_one({"communityid": community_id})
+    if community is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
+        )
+
     # Fetch dwellings with aggregation
     try:
 
@@ -122,14 +131,14 @@ async def water_usage_day(
         59,
         59,
     )
+    # Ensure the community exists in rawdata collection
+    community = await rawdata.find_one({"communityid": community_id})
+    if community is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
+        )
     try:
-        # Ensure the community exists in rawdata collection
-        community = await rawdata.find_one({"communityid": community_id})
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
 
         # Step 1: Get all unique dwellings for this community
         dwellings = await rawdata.distinct("dwellingid", {"communityid": community_id})
@@ -238,16 +247,15 @@ async def water_usage_week(
         days=6, hours=23, minutes=59, seconds=59
     )  # noqa
 
+    # Ensure the community exists in rawdata collection
+    community = await rawdata.find_one({"communityid": community_id})
+    if community is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
+        )
 
     try:
-        # Ensure the community exists in rawdata collection
-        community = await rawdata.find_one({"communityid": community_id})
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
-
         # Step 1: Get all unique dwellings for this community
         dwellings = await rawdata.distinct("dwellingid", {"communityid": community_id})
 
@@ -341,14 +349,16 @@ async def water_usage_month(
     next_month = start_of_month.replace(day=28) + timedelta(days=4)  # Move to the next month
     end_of_month = next_month - timedelta(days=next_month.day)  # Get the last day of this month
     pipeline = []
+
+    # Ensure the community exists in rawdata collection
+    community = await rawdata.find_one({"communityid": community_id})
+    if community is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
+        )
+
     try:
-        # Ensure the community exists in rawdata collection
-        community = await rawdata.find_one({"communityid": community_id})
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
 
         # Step 1: Get all unique dwellings for this community
         dwellings = await rawdata.distinct("dwellingid", {"communityid": community_id})

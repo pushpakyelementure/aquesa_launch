@@ -64,7 +64,7 @@ async def retrieve_all_statistical_info_of_community(
 
 
 @router.get(
-    "/tower/",
+    "/tower/{community_id}",
     status_code=status.HTTP_200_OK,
     response_model=dashboard_res_schema.BlockConsumption,
     responses=block_wise_csm.responses,
@@ -88,7 +88,7 @@ async def blockwise_daily_data(
 
 
 @router.get(
-    "/water_usage/",
+    "/water_usage/{community_id}",
     status_code=status.HTTP_200_OK,
     response_model=dashboard_res_schema.water_usage_Consumption,
     responses=water_usage.responses,

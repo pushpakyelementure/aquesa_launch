@@ -33,20 +33,12 @@ async def daily_data(
         59,
     )
 
-    try:
-        community = await rawdata.find_one(rawdata.communityid == communityid)
-
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
-    except Exception as e:
+    community = await rawdata.find_one(rawdata.communityid == communityid)
+    if community is None:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e),
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
         )
-
     try:
 
         # Define the aggregation pipeline
@@ -135,20 +127,12 @@ async def weekly_data(
         days=6, hours=23, minutes=59, seconds=59
     )  # noqa
 
-    try:
-        community = await rawdata.find_one(rawdata.communityid == communityid)
-
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
-    except Exception as e:
+    community = await rawdata.find_one(rawdata.communityid == communityid)
+    if community is None:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e),
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
         )
-
     try:
         # Define the aggregation pipeline
         pipeline = [
@@ -240,20 +224,13 @@ async def monthly_data(
         59,
     )
 
-    try:
-        community = await rawdata.find_one(rawdata.communityid == communityid)
-
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
-    except Exception as e:
+    community = await rawdata.find_one(rawdata.communityid == communityid)
+    if community is None:
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(e),
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
         )
-
+    
     try:
 
         # Define the aggregation pipeline
@@ -339,14 +316,14 @@ async def month_top_dwellings_consumption(
         59,  # noqa
     )
 
-    try:
-        community = await rawdata.find_one({"communityid": communityid})
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
+    community = await rawdata.find_one({"communityid": communityid})
+    if community is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
+        )
 
+    try:
         # Determine the grouping key based on the aggregation type
         if aggregation == aggregation_enum.month:
             # group_by = {"$month": "$devicetime"}
@@ -428,14 +405,13 @@ async def week_top_dwellings_consumption(
         59,
         59,  # noqa
     )
-
+    community = await rawdata.find_one({"communityid": communityid})
+    if community is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
+        )
     try:
-        community = await rawdata.find_one({"communityid": communityid})
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
 
         # Determine the grouping key based on the aggregation type
         if aggregation == aggregation_enum.month:
@@ -518,14 +494,14 @@ async def day_top_dwellings_consumption(
         59,
         59,  # noqa
     )
+    community = await rawdata.find_one({"communityid": communityid})
+    if community is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Community Not found",
+        )
 
     try:
-        community = await rawdata.find_one({"communityid": communityid})
-        if community is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Community Not found",
-            )
 
         # Determine the grouping key based on the aggregation type
         if aggregation == aggregation_enum.month:
