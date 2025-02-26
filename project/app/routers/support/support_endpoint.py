@@ -9,12 +9,12 @@ from app.auth.permissions import authorize
 from app.routers.support import support_crud
 from app.routers.support import support_req_schema, support_res_schema
 from app.db.models.dwelling import dwelling_model
-# from app.routers.support.support_doc_res import (
-#     get_dwelling,
-#     get_sr_id,
-#     get_tickets,
-#     create_ticket,
-# )
+from app.routers.support.support_res_docs import (
+    get_dwelling,
+    get_sr_id,
+    get_tickets,
+    create_ticket,
+)
 
 
 router = APIRouter()
@@ -25,7 +25,7 @@ router = APIRouter()
     "/support/{community_id}",
     status_code=status.HTTP_200_OK,
     response_model=List[support_res_schema.get_tickets],
-    # responses=get_tickets.responses,
+    responses=get_tickets.responses,
 )
 async def get_all_tickets(
     community_id: UUID4,
@@ -49,6 +49,9 @@ async def get_all_tickets(
             "meta": support.meta,
         }for support in comm
         ]
+    except Exception as http_ex:
+        raise http_ex
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -61,7 +64,7 @@ async def get_all_tickets(
     "/{sr_id}",
     status_code=status.HTTP_200_OK,
     response_model=support_res_schema.get_sr_id,
-    # responses=get_sr_id.responses,
+    responses=get_sr_id.responses,
 )
 async def get_ticket_info(
     sr_id: str,
@@ -85,6 +88,9 @@ async def get_ticket_info(
             "timeline": ticket_info.timeline,
             "meta": ticket_info.meta,
         }
+    except Exception as http_ex:
+        raise http_ex
+        
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -94,10 +100,10 @@ async def get_ticket_info(
 
 # Create a tickets for dwelling
 @router.post(
-    "/",
+    "/{community_id}/{dwelling_id}",
     status_code=status.HTTP_200_OK,
     response_model=support_res_schema.create_ticket,
-    # responses=create_ticket.responses,
+    responses=create_ticket.responses,
 )
 async def create_ticket(
     community_id: UUID4,
@@ -164,7 +170,7 @@ async def create_ticket(
     "/dwelling/{dwelling_id}",
     status_code=status.HTTP_200_OK,
     response_model=List[support_res_schema.get_tickets],
-    # responses=get_dwelling.responses,
+    responses=get_dwelling.responses,
 )
 async def get_tickets_by_dwelling(
     dwelling_id: UUID4,
@@ -176,6 +182,10 @@ async def get_tickets_by_dwelling(
     try:
         tickets = await support_crud.get_by_dwelling_id(dwelling_id)  # noqa
         return tickets
+
+    except Exception as http_ex:
+        raise http_ex
+    
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
