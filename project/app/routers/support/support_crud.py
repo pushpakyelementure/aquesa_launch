@@ -38,13 +38,8 @@ async def get_all_tickets(community_id):
     if comm is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="community not found",
+            detail="Community not found",
         )
     tickets = await service_request.find(service_request.community_id == community_id).to_list() # noqa
-
-    if tickets is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Tickets not found",
-        )
+    
     return tickets

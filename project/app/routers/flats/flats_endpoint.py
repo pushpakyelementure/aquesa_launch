@@ -5,13 +5,13 @@ from app.auth import verify
 from app.auth.permissions import authorize
 from app.routers.flats import flats_res_schema, flats_req_schema, flats_crud
 from app.db.models.app_user import app_users_model
-# from app.routers.flats.flats_docs_res import (
-#     get_flats,
-#     delete_tenant,
-#     post_owner,
-#     post_tenant,
-#     put_tenant
-# )
+from app.routers.flats.flats_res_docs import (
+    get_flats,
+    delete_tenant,
+    post_owner,
+    post_tenant,
+    put_tenant
+)
 router = APIRouter()
 
 
@@ -20,7 +20,7 @@ router = APIRouter()
     "/{dwelling_id}",
     status_code=status.HTTP_200_OK,
     response_model=flats_res_schema.read_flats,
-    # responses=get_flats.responses
+    responses=get_flats.responses
 )
 async def get_flat_details(
     dwelling_id: UUID4,
@@ -29,16 +29,18 @@ async def get_flat_details(
     await authorize.user_is_superuser(
         user_token=user_token,
     )
-    try:
-        user = await app_users_model.find_one(app_users_model.dwelling.dwelling_id == dwelling_id) # noqa
-        if user is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="user not found",
-            )
-        for i in user.dwelling:
-            pass
 
+    user = await app_users_model.find_one(app_users_model.dwelling.dwelling_id == dwelling_id) # noqa
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="dwelling user not found",
+        )
+    for i in user.dwelling:
+        pass
+
+    try:
+       
         dwell = await flats_crud.get_by_dwelling(dwelling_id)
         return {
             "flat_no": dwell.flat_no,
@@ -60,7 +62,7 @@ async def get_flat_details(
     "/{dwelling_id}/owner",
     status_code=status.HTTP_201_CREATED,
     response_model=flats_res_schema.change_owner,
-    # responses=post_owner.responses,
+    responses=post_owner.responses,
 
     )
 async def change_ownership(
@@ -94,7 +96,7 @@ async def change_ownership(
     "/{dwelling_id}/",
     status_code=status.HTTP_201_CREATED,
     response_model=flats_res_schema.create_tenant,
-    # responses=post_tenant.responses,
+    responses=post_tenant.responses,
     )
 async def add_tenant(
     dwelling_id: UUID4,
@@ -126,7 +128,7 @@ async def add_tenant(
     "/{dwelling_id}/tenent",
     status_code=status.HTTP_200_OK,
     response_model=flats_res_schema.update_tenant,
-    # responses=put_tenant.responses,
+    responses=put_tenant.responses,
     )
 async def update_tenant(
     dwelling_id: UUID4,
@@ -157,7 +159,7 @@ async def update_tenant(
 @router.delete(
     "/{dwelling_id}/tenant",
     status_code=status.HTTP_204_NO_CONTENT,
-    # responses=delete_tenant.responses,
+    responses=delete_tenant.responses,
 )
 async def remove_tenant(
     dwelling_id: UUID4,
