@@ -50,6 +50,10 @@ async def get_flat_details(
             "email": user.email,
             "mobile": user.mobile,
         }
+
+    except Exception as http_ex:
+        raise http_ex
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -84,6 +88,10 @@ async def change_ownership(
         return {
             "detail": "Changed ownership of dwelling",
         }
+    
+    except Exception as http_ex:
+        raise http_ex
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -116,6 +124,10 @@ async def add_tenant(
         return {
             "detail": "Add tenent for dwelling",
         }
+    
+    except Exception as http_ex:
+        raise http_ex
+    
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -125,7 +137,7 @@ async def add_tenant(
 
 # Update the tenent info
 @router.put(
-    "/{dwelling_id}/tenent",
+    "/{dwelling_id}/tenant",
     status_code=status.HTTP_200_OK,
     response_model=flats_res_schema.update_tenant,
     responses=put_tenant.responses,
@@ -148,6 +160,10 @@ async def update_tenant(
         return {
             "detail": "Changed tenent of dwelling",
         }
+
+    except Exception as http_ex:
+        raise http_ex
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -171,6 +187,10 @@ async def remove_tenant(
     try:
         await flats_crud.delete_tenant(dwelling_id)
         return None
+
+    except Exception as http_ex:
+        raise http_ex
+
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

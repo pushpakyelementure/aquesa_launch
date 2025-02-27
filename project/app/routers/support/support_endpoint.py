@@ -101,7 +101,7 @@ async def get_ticket_info(
 # Create a tickets for dwelling
 @router.post(
     "/{community_id}/{dwelling_id}",
-    status_code=status.HTTP_200_OK,
+    status_code=status.HTTP_201_CREATED,
     response_model=support_res_schema.create_ticket,
     responses=create_ticket.responses,
 )
