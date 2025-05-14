@@ -10,7 +10,7 @@ id_token = get_token.login_and_get_id_token(
     os.getenv("FIREBASE_SUPERUSER_ADMIN_PASSWORD"),
 )
 
-# Testing for one community all infomation  response code is 200
+# # Testing for one community all infomation  response code is 200
 @pytest.mark.asyncio
 async def test_get_info_community(test_app_with_db):
     headers = {"Authorization": f"Bearer {id_token}"}
