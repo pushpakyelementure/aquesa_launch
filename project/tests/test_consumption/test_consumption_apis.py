@@ -20,7 +20,7 @@ async def test_get_total_csm(test_app_with_db):
     params = {
         "start_date": "2025-02-21 00:00:00",
         "end_date": "2025-02-21 23:59:59",
-        "aggregation": "day",
+        "aggregation": ["day", "week", "month"],
     }
 
     response = await test_app_with_db.get(
